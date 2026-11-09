@@ -1,0 +1,128 @@
+USE [master]
+GO
+
+-- Создаем базу, если её еще нет
+IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = N'HotelBookingDb')
+BEGIN
+    CREATE DATABASE [HotelBookingDb] COLLATE Cyrillic_General_CI_AS;
+END
+GO
+
+USE [HotelBookingDb];
+GO
+
+-- ============================================
+-- 1. СПРАВОЧНИКИ
+-- ============================================
+
+CREATE TABLE Roles (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE RoomCategories (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(50) NOT NULL
+);
+
+CREATE TABLE BookingStatuses (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(50) NOT NULL
+);
+
+-- ============================================
+-- 2. ОСНОВНЫЕ ТАБЛИЦЫ
+-- ============================================
+
+CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(100) NOT NULL,
+    FullName NVARCHAR(100) NOT NULL,
+    Phone NVARCHAR(20) NOT NULL,
+    RoleId INT NOT NULL FOREIGN KEY REFERENCES Roles(Id)
+);
+
+CREATE TABLE Rooms (
+    Id INT PRIMARY KEY IDENTITY,
+    Number NVARCHAR(10) NOT NULL UNIQUE,
+    CategoryId INT NOT NULL FOREIGN KEY REFERENCES RoomCategories(Id),
+    Floor INT NOT NULL,
+    Capacity INT NOT NULL,
+    PricePerNight DECIMAL(10,2) NOT NULL,
+    Description NVARCHAR(500),
+    ImagePath NVARCHAR(500) -- ⭐ Расширено для длинных путей к картинкам
+);
+
+CREATE TABLE Services (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(100) NOT NULL,
+    Price DECIMAL(10,2) NOT NULL
+);
+
+CREATE TABLE Guests (
+    Id INT PRIMARY KEY IDENTITY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    PassportData NVARCHAR(100)
+);
+
+-- ============================================
+-- 3. ТРАНЗАКЦИИ
+-- ============================================
+
+CREATE TABLE Bookings (
+    Id INT PRIMARY KEY IDENTITY,
+    UserId INT NOT NULL FOREIGN KEY REFERENCES Users(Id),
+    RoomId INT NOT NULL FOREIGN KEY REFERENCES Rooms(Id),
+    StatusId INT NOT NULL FOREIGN KEY REFERENCES BookingStatuses(Id),
+    CheckInDate DATE NOT NULL,
+    CheckOutDate DATE NOT NULL,
+    TotalPrice DECIMAL(10,2) NOT NULL
+);
+
+-- Связь Брони и Гостей
+CREATE TABLE BookingGuests (
+    BookingId INT NOT NULL FOREIGN KEY REFERENCES Bookings(Id) ON DELETE CASCADE,
+    GuestId INT NOT NULL FOREIGN KEY REFERENCES Guests(Id) ON DELETE CASCADE,
+    PRIMARY KEY (BookingId, GuestId)
+);
+
+-- Связь Брони и Доп. Услуг
+CREATE TABLE BookingServices (
+    BookingId INT NOT NULL FOREIGN KEY REFERENCES Bookings(Id) ON DELETE CASCADE,
+    ServiceId INT NOT NULL FOREIGN KEY REFERENCES Services(Id),
+    Quantity INT NOT NULL DEFAULT 1,
+    PRIMARY KEY (BookingId, ServiceId)
+);
+
+-- ============================================
+-- 4. ЗАПОЛНЕНИЕ ТЕСТОВЫМИ ДАННЫМИ
+-- ============================================
+
+-- Роли (1-Админ, 2-Менеджер, 3-Клиент)
+INSERT INTO Roles(Name) VALUES (N'Администратор'), (N'Менеджер'), (N'Клиент');
+
+-- Статусы
+INSERT INTO BookingStatuses(Name) VALUES (N'Новая'), (N'Подтверждена'), (N'Отменена');
+
+-- Категории
+INSERT INTO RoomCategories(Name) VALUES (N'Стандарт'), (N'Люкс');
+
+-- Пользователи (Пароли: 123)
+INSERT INTO Users(Email, PasswordHash, FullName, Phone, RoleId) VALUES 
+(N'admin@hotel.ru', N'123', N'Иванов Иван (Админ)', N'+79991112233', 1),
+(N'manager@hotel.ru', N'123', N'Петрова Мария (Менеджер)', N'+79994445566', 2),
+(N'client@mail.ru', N'123', N'Сидоров Алексей (Клиент)', N'+79997778899', 3);
+
+-- Услуги
+INSERT INTO Services(Name, Price) VALUES 
+(N'Завтрак', 500), 
+(N'Трансфер', 1500);
+
+-- Номера
+INSERT INTO Rooms(Number, CategoryId, Floor, Capacity, PricePerNight, Description, ImagePath) VALUES 
+(N'101', 1, 1, 2, 2500.00, N'Уютный номер с одной кроватью', N''),
+(N'102', 1, 1, 2, 2800.00, N'Стандарт с двумя кроватями', N''),
+(N'201', 2, 2, 3, 5500.00, N'Люкс с видом на море', N'');
+GO

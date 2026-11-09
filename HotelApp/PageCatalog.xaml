@@ -1,0 +1,59 @@
+﻿<Page x:Class="HotelApp.PageCatalog" 
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+      Title="Номера" Background="#F5F6FA" Loaded="Page_Loaded">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBlock Text="Наши номера" FontSize="22" FontWeight="Bold"/>
+            <TextBlock x:Name="tbName" Text="Гость" FontSize="18" Foreground="#2980B9" Margin="20,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBox x:Name="tbSearch" Width="200" TextChanged="tbSearch_TextChanged" Margin="0,0,10,0"/>
+            <ComboBox x:Name="cbFilter" Width="150" SelectionChanged="cbFilter_SelectionChanged"/>
+        </StackPanel>
+
+        <ListView Grid.Row="2" x:Name="ListRooms" BorderThickness="0" Background="Transparent">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="{Binding PricePerNight, Converter={StaticResource PriceConv}}" Padding="10" Margin="0,0,0,5" BorderBrush="#CCC" BorderThickness="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="180"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Image Source="{Binding ImageUrl}" Width="100" Height="100" Stretch="Uniform"/>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="15,0">
+                                <TextBlock Text="{Binding Number, StringFormat='Номер {0}'}" FontSize="18" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding RoomCategories.Name}" Foreground="#7F8C8D" Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding Description}" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                                <TextBlock Text="{Binding Capacity, StringFormat='Вместимость: {0} чел.'}" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding PricePerNight, StringFormat='{}{0:F2} ₽ / ночь'}" FontSize="18" FontWeight="Bold" Foreground="Red" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                <Button Content="Забронировать" Height="35" Background="#27AE60" Foreground="White" Click="BookRoom_Click" Tag="{Binding Id}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="btnLogin" Content="Войти" Width="100" Click="btnLogin_Click" Background="#2196F3" Visibility="Collapsed" Margin="0,0,10,0"/>
+            <Button x:Name="btnProfile" Content="Профиль" Width="100" Click="btnProfile_Click" Background="#3498DB" Margin="0,0,10,0"/>
+            <Button x:Name="btnMyBookings" Content="Мои брони" Width="120" Click="btnMyBookings_Click" Background="#8E44AD" Margin="0,0,10,0"/>
+            <Button x:Name="btnLogout" Content="Выйти" Width="100" Click="btnLogout_Click" Background="#E74C3C"/>
+        </StackPanel>
+    </Grid>
+</Page>

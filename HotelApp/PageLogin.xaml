@@ -1,0 +1,28 @@
+﻿<Page x:Class="HotelApp.PageLogin" 
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+      Title="Вход" Background="#F0F0F0">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <TextBlock Text="Вход в отель" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+            <TextBlock Text="Email:" FontWeight="SemiBold"/>
+            <TextBox x:Name="txbLogin"/>
+            <TextBlock Text="Пароль:" FontWeight="SemiBold"/>
+            <PasswordBox x:Name="txbPassword"/>
+            <Button Content="Войти" Height="40" Click="Login_Click" Background="#2196F3"/>
+            <Button Content="Регистрация" Height="30" Click="Register_Click" Background="#27AE60" Margin="0,10,0,0"/>
+            <Button Content="Войти как гость" Height="30" Click="Guest_Click" Background="#95A5A6" Margin="0,5,0,0"/>
+        </StackPanel>
+    </Grid>
+</Page>

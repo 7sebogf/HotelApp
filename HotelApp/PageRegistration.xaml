@@ -1,0 +1,18 @@
+﻿<Page x:Class="HotelApp.PageRegistration" 
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+      Title="Регистрация" Background="#F0F0F0">
+    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
+        <TextBlock Text="Регистрация" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+        <TextBlock Text="ФИО:"/>
+        <TextBox x:Name="txtName"/>
+        <TextBlock Text="Телефон:"/>
+        <TextBox x:Name="txtPhone"/>
+        <TextBlock Text="Email:"/>
+        <TextBox x:Name="txtEmail"/>
+        <TextBlock Text="Пароль:"/>
+        <PasswordBox x:Name="txtPass"/>
+        <Button Content="Создать аккаунт" Height="40" Click="btnReg_Click" Background="#27AE60"/>
+        <Button Content="Назад" Height="30" Click="btnBack_Click" Background="#95A5A6" Margin="0,10,0,0"/>
+    </StackPanel>
+</Page>
